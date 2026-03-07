@@ -38,6 +38,13 @@ def resolve_config_path() -> str:
     return candidates[-1]
 
 
+def resolve_data_path() -> str:
+    env_path = os.environ.get("DWGXBOT_DATA")
+    if env_path:
+        return env_path
+    return os.path.join(RUN_DIR, "data.json")
+
+
 # 配置日志
 logging.basicConfig(
     level=logging.INFO,
@@ -391,6 +398,7 @@ class DwgxBot(botpy.Client):
 
 async def main():
     config_path = resolve_config_path()
+    data_path = resolve_data_path()
     if not os.path.exists(config_path):
         logger.error(f"配置文件不存在: {config_path}")
         exit(1)
@@ -403,7 +411,7 @@ async def main():
         exit(1)
 
     # 初始化数据管理器
-    data_manager = DataManager()
+    data_manager = DataManager(config_file=config_path, data_file=data_path)
 
     # 创建 DwgxBot 实例并传入 data_manager
     intents = botpy.Intents(public_guild_messages=True)
