@@ -17,12 +17,33 @@ from Boss import Boss
 from Gambling import Gambling
 from RedEnvelope import RedEnvelope
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", "..", ".."))
+RUN_DIR = os.path.join(PROJECT_ROOT, "other", "run")
+os.makedirs(RUN_DIR, exist_ok=True)
+
+
+def resolve_config_path() -> str:
+    env_path = os.environ.get("DWGXBOT_CONFIG")
+    if env_path:
+        return env_path
+    candidates = [
+        os.path.join(BASE_DIR, "config.yaml"),
+        os.path.join(PROJECT_ROOT, "config.yaml"),
+        os.path.join(RUN_DIR, "config.yaml"),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return candidates[-1]
+
+
 # 配置日志
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("dwgxbot.log"),
+        logging.FileHandler(os.path.join(RUN_DIR, "dwgxbot.log"), encoding="utf-8"),
         logging.StreamHandler()
     ]
 )
@@ -369,10 +390,11 @@ class DwgxBot(botpy.Client):
 
 
 async def main():
-    if not os.path.exists('config.yaml'):
-        logger.error("配置文件 config.yaml 不存在。")
+    config_path = resolve_config_path()
+    if not os.path.exists(config_path):
+        logger.error(f"配置文件不存在: {config_path}")
         exit(1)
-    with open('config.yaml', 'r', encoding='utf-8') as f:
+    with open(config_path, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f)
     appid = config.get('appid')
     secret = config.get('secret')
