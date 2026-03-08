@@ -1,35 +1,33 @@
-# QQbot (DwgxBot)
+# QQbot（DwgxBot）
 
-基于 `qq-botpy` 的 QQ 机器人项目，包含群聊互动、小游戏、红包与数据持久化模块。
+这是一个基于 `qq-botpy` 的 QQ 机器人项目，包含群聊互动、定时任务和基础数据持久化能力。
+
+## 功能概览
+
+- 基础消息响应
+- 管理员功能扩展
+- 运行日志与数据持久化
+- 可按模块逐步扩展
 
 ## 环境要求
 
 - Python 3.10+
-- 已在 QQ 机器人平台创建应用并获取 `appid` / `secret`
+- 已在 QQ 机器人平台申请 `appid` / `secret`
 
 ## 快速启动
-
-1. 克隆仓库并进入目录
 
 ```bash
 git clone https://github.com/dwgx/QQbot.git
 cd QQbot
-```
-
-2. 创建并激活虚拟环境（推荐）
-
-```bash
 python -m venv .venv
 .venv\Scripts\activate
-```
-
-3. 安装依赖
-
-```bash
 pip install -r requirements.txt
+python Code/QQbot/main/DwgxBot.py
 ```
 
-4. 准备配置文件（推荐放在 `other/run/config.yaml`）
+## 配置文件
+
+推荐创建 `other/run/config.yaml`：
 
 ```yaml
 appid: "你的appid"
@@ -38,44 +36,23 @@ admins:
   - "管理员用户ID"
 ```
 
-5. 启动机器人
+## 可用环境变量
 
-```bash
-python Code/QQbot/main/DwgxBot.py
-```
+- `DWGXBOT_CONFIG`：指定配置文件路径
+- `DWGXBOT_DATA`：指定数据文件路径
 
-## 配置与数据路径
+## 目录说明
 
-程序支持以下环境变量：
-
-- `DWGXBOT_CONFIG`: 指定配置文件路径
-- `DWGXBOT_DATA`: 指定数据文件路径
-
-未设置时默认行为：
-
-- 配置文件优先查找：
-  1. `Code/QQbot/main/config.yaml`
-  2. 仓库根目录 `config.yaml`
-  3. `other/run/config.yaml`
-- 数据文件默认写入：`other/run/data.json`
-- 日志默认写入：`other/run/dwgxbot.log`
-
-## 项目结构（核心）
-
-- `Code/QQbot/main/`: 机器人主逻辑
-- `other/run/`: 运行期配置与数据目录
-- `web/`: 相关网页资源和辅助服务代码
+- `Code/QQbot/main/`：主逻辑入口
+- `other/run/`：运行期配置、数据、日志
+- `web/`：网页与辅助资源
 
 ## 常见问题
 
-### 1) 启动时报缺少 appid/secret
+### 启动报 appid/secret 缺失
 
-检查配置文件是否存在，并确认 `appid`、`secret` 字段已填写。
+检查配置文件路径与字段名是否正确。
 
-### 2) 运行目录变化后找不到配置文件
+### 数据文件无法写入
 
-设置 `DWGXBOT_CONFIG` 指向绝对路径配置文件，避免依赖当前工作目录。
-
-### 3) 数据文件写入失败
-
-检查 `other/run/` 或 `DWGXBOT_DATA` 指向目录是否有写权限。
+检查目标目录是否存在写权限。
